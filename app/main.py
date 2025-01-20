@@ -13,30 +13,40 @@ SUPABASE_URL: str = os.getenv("SUPABASE_URL")
 SUPABASE_KEY: str = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# Pydantic model for FacilityAdmin
-class FacilityAdmin(BaseModel):
-    name: str
-    age: int
-    condition: str
+# Pydantic model for Patients
+class Patients(BaseModel):
+    date_of_birth: str
+    email: str
+    employement_status: str
+    first_name: str
+    last_name: str
+    role: str
+    uid: str
+    username: str
 
-@app.post("/facility_admins/")
-async def create_facility_admin(facility_admin: FacilityAdmin):
-    response = supabase.table('facility_admins').insert({
-        'name': facility_admin.name,
-        'age': facility_admin.age,
-        'condition': facility_admin.condition
+@app.post("/patients/")
+async def create_patient(patient: Patients):
+    response = supabase.table('patients').insert({
+        'date_of_birth': patient.date_of_birth,
+        'email': patient.email,
+        'employement_status': patient.employement_status,
+        'first_name': patient.first_name,
+        'last_name': patient.last_name,
+        'role': patient.role,
+        'uid': patient.uid,
+        'username': patient.username
     }).execute()
     
     if response.status_code != 201:
-        raise HTTPException(status_code=400, detail="Error creating facility_admin record")
+        raise HTTPException(status_code=400, detail="Error creating patient record")
 
-    return {"message": "FacilityAdmin record created successfully"}
+    return {"message": "Patients record created successfully"}
 
-@app.get("/facility_admins/")
-async def get_facility_admins():
-    response = supabase.table('facility_admins').select("*").execute()
+@app.get("/patients/")
+async def get_patients():
+    response = supabase.table('patients').select("*").execute()
     
     if response.status_code != 200:
-        raise HTTPException(status_code=400, detail="Error fetching facility_admins")
+        raise HTTPException(status_code=400, detail="Error fetching patients")
 
     return response.data
